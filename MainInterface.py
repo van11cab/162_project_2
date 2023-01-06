@@ -4,10 +4,27 @@ from tkinter import messagebox
 from tkinter import ttk
 from PIL import Image, ImageTk
 import os
+from MinMaxCompression import maxPixelValue
+global minImage, maxImage
 
 
 imageList = []
 imageVariables = []
+
+def openMinMax():
+
+    testImage = imageList[0][0]
+    # width, height = testImage.size
+    width = testImage.width()
+    height = testImage.height()
+
+    max_imgR = [[0] * height for _ in range(width)]
+    max_imgG = [[0] * height for _ in range(width)]
+    max_imgB = [[0] * height for _ in range(width)]
+    
+    maxImage = maxPixelValue(imageList, max_imgR, max_imgG, max_imgB)
+
+    # minImage
 
 def openFolder():
     folderPath = filedialog.askdirectory()
@@ -42,7 +59,11 @@ mainWindow.config(menu = mainMenuBar)
 
 fileMenu = tk.Menu(mainMenuBar, tearoff=0)
 fileMenu.add_command(label="Open Folder", command=openFolder)
-mainMenuBar.add_cascade(label="Functionalities", menu=fileMenu)
+mainMenuBar.add_cascade(label="File", menu=fileMenu)
+
+compressionMenu = tk.Menu(mainMenuBar, tearoff=0)
+compressionMenu.add_command(label="Min and Max", command=openMinMax)
+mainMenuBar.add_cascade(label="Compression", menu=compressionMenu)
 
 displayImageLabel = tk.Label(mainWindow)
 displayImageLabel.pack(anchor=tk.CENTER)
