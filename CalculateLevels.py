@@ -45,7 +45,7 @@ def calculatePixelLevels(folderpath, minImage, maxImage):
         for x in range(minImage.width): #testing purposes
             for y in range(minImage.height):
                 #take the current pixel of max, min, and current image
-               
+
                 currpixel = currpixelmap[x,y]
 
                 currmax = currmaxpixelmap[x,y]
