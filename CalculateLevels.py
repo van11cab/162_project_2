@@ -50,62 +50,32 @@ def calculatePixelLevels(folderpath, minImage, maxImage):
 
                 currmax = currmaxpixelmap[x,y]
                 currmin = currminpixelmap[x,y]
-                #need to calculate levels of an image
                 
-                
-                #if x or y-axis is 0, meaning the first row/ column, manually calculate the levels
-                if (x == 0 or y == 0):
-                    #for each color, if max and min are equal, assume 0
-                    #r
-                    if(currmax[0] == currmin[0]):
-                        lvl_imgR[x][y]= 0
-                    else:
-                        #calculate level of R
-                        print("entered else")
-                        lvl_imgR[x][y] = calculate_level(currpixel[0], currmin[0], currmax[0])
-                        
-                    
-                    #g
-                    if(currmax[1] == currmin[1]):
-                        lvl_imgG[x][y]= 0
-                    else:
-                        #calculate level of G
-                        print("entered")
-                        lvl_imgG[x][y] = calculate_level(currpixel[1], currmin[1], currmax[1])
-                    
-                    #b
-                    if(currmax[2] == currmin[2]):
-                        lvl_imgB[x][y]= 0
-                    else:
-                        #calculate level of B
-                        print("entered")
-                        lvl_imgB[x][y] = calculate_level(currpixel[2], currmin[2], currmax[2])
+                #r
+                if currpixel[0] > currmax[0]:
+                    R = currmax[0]
+                elif currpixel[0] < currmin[0]:
+                    R = currmin[0]
                 else:
-                    #calculate via mmp2
-                    #R
-                    lvl_imgR[x][y]=  (lvl_imgR[x][y-1] +  lvl_imgR[x-1][y]) /2
-                    #G
-                    lvl_imgG[x][y]=  (lvl_imgG[x][y-1] +  lvl_imgG[x-1][y]) /2
-                    #B
-                    lvl_imgB[x][y]=  (lvl_imgB[x][y-1] +  lvl_imgB[x-1][y])/2
-
-                #given the levels, calculate the predictive value
-                #R
-                predicted_R = predicted(currmin[0], lvl_imgR[x][y], currmax[0])
-                if(predicted_R != currpixel[0]):
-                    predicted_R = currpixel[0] - predicted_R
-                #G
-                predicted_G = predicted(currmin[1], lvl_imgG[x][y], currmax[1])
-                if(predicted_G != currpixel[1]):
-                    predicted_G = currpixel[1] - predicted_G
-                #B
-                predicted_B = predicted(currmin[2], lvl_imgB[x][y], currmax[2])
-                if(predicted_B != currpixel[2]):
-                    predicted_B = currpixel[2] - predicted_B
-
-                #save the predicted values to the difference image
+                    R = currpixel[0]
                 
-                difference_img[x][y] = [ predicted_R, predicted_G,  predicted_B]
+                #g
+                if currpixel[1] > currmax[1]:
+                    G = currmax[1]
+                elif currpixel[1] < currmin[1]:
+                    G = currmin[1]
+                else:
+                    G = currpixel[1]
+                
+                #B
+                if currpixel[2] > currmax[2]:
+                    B = currmax[2]
+                elif currpixel[2] < currmin[2]:
+                    B = currmin[2]
+                else:
+                    B = currpixel[2]
+                
+                difference_img[x][y] = [ R,G,B]
 
 
         
