@@ -45,33 +45,38 @@ def calculatePixelLevels(folderpath, minImage, maxImage):
         for x in range(minImage.width): #testing purposes
             for y in range(minImage.height):
                 #take the current pixel of max, min, and current image
-
                 currpixel = currpixelmap[x,y]
 
                 currmax = currmaxpixelmap[x,y]
+                currmax0 = currmax[0] +10
+                currmax1 = currmax[1] +10
+                currmax2 = currmax[2] +10
                 currmin = currminpixelmap[x,y]
-                
+                currmin0 = currmin[0] -10
+                currmin1= currmin[1] -10
+                currmin2 = currmin[2] -10
+
                 #r
-                if currpixel[0] > currmax[0]:
-                    R = currmax[0]
-                elif currpixel[0] < currmin[0]:
-                    R = currmin[0]
+                if currpixel[0] > currmax0:
+                    R = currmax0
+                elif currpixel[0] < currmin0:
+                    R = currmin0
                 else:
                     R = currpixel[0]
                 
                 #g
-                if currpixel[1] > currmax[1]:
-                    G = currmax[1]
-                elif currpixel[1] < currmin[1]:
-                    G = currmin[1]
+                if currpixel[1] > currmax1:
+                    G = currmax1
+                elif currpixel[1] < currmin1:
+                    G = currmin1
                 else:
                     G = currpixel[1]
                 
                 #B
-                if currpixel[2] > currmax[2]:
-                    B = currmax[2]
-                elif currpixel[2] < currmin[2]:
-                    B = currmin[2]
+                if currpixel[2] > currmax2:
+                    B = currmax2
+                elif currpixel[2] < currmin2:
+                    B = currmin2
                 else:
                     B = currpixel[2]
                     
