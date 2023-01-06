@@ -1,32 +1,70 @@
+import pickle
 import tkinter as tk
 from tkinter import filedialog
 from tkinter import messagebox
 from tkinter import ttk
-from PIL import Image, ImageTk
+from PIL import Image, ImageTk, ImageOps
 import os
-from MinMaxCompression import maxPixelValue
-global minImage, maxImage
-
+from CalculateLevels import calculatePixelLevels
+from MinMaxCompression import maxPixelValue, minPixelValue
+from ImageDecompressor import decompressImages
 
 imageList = []
 imageVariables = []
 
 def openMinMax():
-
-    testImage = imageList[0][0]
-    # width, height = testImage.size
-    width = testImage.width()
-    height = testImage.height()
-
-    max_imgR = [[0] * height for _ in range(width)]
-    max_imgG = [[0] * height for _ in range(width)]
-    max_imgB = [[0] * height for _ in range(width)]
     
-    maxImage = maxPixelValue(imageList, max_imgR, max_imgG, max_imgB)
+    global minImage, maxImage
+    maxImage = maxPixelValue(folderPath)
+    # maxImage.show()
+    maxImage = ImageOps.mirror(maxImage)
+    # maxImage.show()
+    maxImage = maxImage.rotate(90, expand = 1)
+    # maxImage.show()
 
-    # minImage
+
+    minImage = minPixelValue(folderPath)
+    # minImage.show()
+    minImage = ImageOps.mirror(minImage)
+    # minImage.show()
+    minImage = minImage.rotate(90, expand=1)
+    # minImage.show()
+    
+    compresssed_img_lib = calculatePixelLevels(folderPath, minImage, maxImage)
+    print("done compressing")
+
+
+    #assume uncompressed form is exactly the same as the compressed_img_lib
+    decompressed_img_lib = decoder(compresssed_img_lib)
+    
+    with open("compressedFile.cmp", "wb") as compressedImage:
+        pickle.dump(compresssed_img_lib, compressedImage)
+
+    # print(compresssed_img_lib)
+    print("displaying images ...")
+    decompressImages("compressedFile.cmp")
+
+
+    # maxImage.show()
+    # minImage.show()
+
+def decoder(compresssed_img_lib):
+    #get the max and min of each image
+    
+    return 0
+
+
+def openCalculateLevels():
+    print("...")
+
+# def openImageDecompression():
+#     compressedFile = "./compressedFile.cmp"
+#     decompressImages(compressedFile)
+#     print("...")
+
 
 def openFolder():
+    global folderPath
     folderPath = filedialog.askdirectory()
     imageFiles = os.listdir(folderPath)
 
@@ -63,6 +101,7 @@ mainMenuBar.add_cascade(label="File", menu=fileMenu)
 
 compressionMenu = tk.Menu(mainMenuBar, tearoff=0)
 compressionMenu.add_command(label="Min and Max", command=openMinMax)
+compressionMenu.add_command(label="Calculate Levels", command=openCalculateLevels)
 mainMenuBar.add_cascade(label="Compression", menu=compressionMenu)
 
 displayImageLabel = tk.Label(mainWindow)
