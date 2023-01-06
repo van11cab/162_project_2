@@ -8,7 +8,7 @@ def calculate_level(Value, min, max):
 
 def predicted(min, L, max):
     predicted = min + ((L/N)*(max - min))
-    return predicted
+    return round(predicted, 2)
 
 def calculatePixelLevels(folderpath, minImage, maxImage):
     #hold image directory
@@ -30,15 +30,16 @@ def calculatePixelLevels(folderpath, minImage, maxImage):
     currminpixelmap = minImage.load()
     #create 2d array na maghold sa 3 values (mao na ni ang differences sa pictures nato)
     pixel = [0,0,0]
-    difference_img = [[pixel] * height for _ in range(width)]
     difference_img_library = []
 
     for file in imgdirectory:
+        print("enteering ", file)
         imgfilepath = folderpath + "/" + file
         image = Image.open(imgfilepath, 'r')
         image = image.convert("RGB")
         width, height = image.size
         currpixelmap = image.load()
+        difference_img = [[pixel] * height for _ in range(width)]
         # for y in range(minImage.height): #original
         #     for x in range(minImage.width):
         for x in range(minImage.width): #testing purposes
@@ -57,12 +58,12 @@ def calculatePixelLevels(folderpath, minImage, maxImage):
                     #for each color, if max and min are equal, assume 0
                     #r
                     if(currmax[0] == currmin[0]):
-                    
                         lvl_imgR[x][y]= 0
                     else:
                         #calculate level of R
                         print("entered else")
                         lvl_imgR[x][y] = calculate_level(currpixel[0], currmin[0], currmax[0])
+                        
                     
                     #g
                     if(currmax[1] == currmin[1]):
@@ -96,35 +97,10 @@ def calculatePixelLevels(folderpath, minImage, maxImage):
                 #B
                 predicted_B = predicted(currmin[2], lvl_imgB[x][y], currmax[2])
 
-                if(currpixel[0] > currmax[0] or currpixel[0] < currmin[0]):
-                    print("currentpixel is outside range")
-                    break
-
-
-                if(predicted_R >= currpixel[0]):
-                    print(currmin[0])
-                    print(lvl_imgR[x][y])
-                    print(currmax[0])
-                    print("==========")
-                    print(predicted_R)
-                    print(currpixel[0])
-                    break
-                else:
-                    print("predicted_R is not above currpixel")
                 #save the predicted values to the difference image
                 difference_img[x][y] = [currpixel[0] - predicted_R, currpixel[1] - predicted_G, currpixel[2] - predicted_B]
-                if(difference_img[x][y][0] < 0):
-                    print(difference_img[x][y][0])
-                    print(predicted_R)
-                    print(currpixel[0])
-                    print("==========")
-                    print(predicted_G)
-                    print(currpixel[1])
-                    print("==========")
-                    print(predicted_B)
-                    print(currpixel[2])
-                    print("==========")
-                    break
+
+
         
         difference_img_library.append(difference_img)
 
