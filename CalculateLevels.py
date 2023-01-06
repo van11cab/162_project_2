@@ -92,12 +92,19 @@ def calculatePixelLevels(folderpath, minImage, maxImage):
                 #given the levels, calculate the predictive value
                 #R
                 predicted_R = predicted(currmin[0], lvl_imgR[x][y], currmax[0])
+                if(predicted_R != currpixel[0]):
+                    predicted_R = currpixel[0] - predicted_R
                 #G
                 predicted_G = predicted(currmin[1], lvl_imgG[x][y], currmax[1])
+                if(predicted_G != currpixel[1]):
+                    predicted_G = currpixel[1] - predicted_G
                 #B
                 predicted_B = predicted(currmin[2], lvl_imgB[x][y], currmax[2])
+                if(predicted_B != currpixel[2]):
+                    predicted_B = currpixel[2] - predicted_B
 
                 #save the predicted values to the difference image
+                
                 difference_img[x][y] = [currpixel[0] - predicted_R, currpixel[1] - predicted_G, currpixel[2] - predicted_B]
 
 
