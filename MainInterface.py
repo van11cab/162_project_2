@@ -75,7 +75,23 @@ def openMinMax():
     print(f"average size of original images: {originalImageAverageSize} KB")
 
     extractedFolder, imageExtractionTime, extractedImageTotalSize, extractedImageAverageSize = decompressImages("compressedFile.cmp")
-    openDialog(imageCompressionTime, imageExtractionTime, originalImageTotalSize, extractedImageTotalSize, originalImageAverageSize, extractedImageAverageSize, extractedFolder)
+    compressionRatio = (originalImageTotalSize - extractedImageTotalSize)/(originalImageTotalSize) * 100
+    compressionRatio = round(compressionRatio, 3)
+
+    openDialog(imageCompressionTime, imageExtractionTime, originalImageTotalSize, extractedImageTotalSize, originalImageAverageSize, extractedImageAverageSize, extractedFolder, compressionRatio)
+
+
+    informationLabel.configure(
+    text=
+        "Elapsed time [IMAGE COMPRESION]: %s seconds! \n" %(format((imageCompressionTime), ".2f")) +
+        "Total size of all [ORIGINAL IMAGE]: %skb \n" %(format((originalImageTotalSize), ".2f")) +
+        "Average size of [ORIGINAL IMAGE]: %skb\n\n" %(format((originalImageAverageSize), ".2f")) +
+        "Elapsed time [IMAGE EXTRACTION]: %s seconds! \n" %(format((imageExtractionTime), ".2f")) +
+        "Total size of all [EXTRACTED IMAGE]: %skb \n" %(format((extractedImageTotalSize), ".2f")) +
+        "Average size of [EXTRACTED IMAGE]: %skb\n\n" %(format((extractedImageAverageSize), ".2f")) +
+        "Compression Ratio [ORIGINAL/EXTRACTED]: %s\n" %(compressionRatio) +
+        "Extracted images saved to: %s" %(extractedFolder)
+    )
 
 def openExtractedImages(extractedFolder):
     pop.destroy()
@@ -83,15 +99,12 @@ def openExtractedImages(extractedFolder):
 
 
 
-def openDialog(imageCompressionTime, imageExtractionTime, originalImageTotalSize, extractedImageTotalSize, originalImageAverageSize, extractedImageAverageSize, extractedFolder):
+def openDialog(imageCompressionTime, imageExtractionTime, originalImageTotalSize, extractedImageTotalSize, originalImageAverageSize, extractedImageAverageSize, extractedFolder, compressionRatio):
     # messagebox.showinfo("test", "test")
     global pop
     pop = tk.Toplevel(mainWindow)
     pop.title("Image Compression Results")
     pop.geometry("600x300")
-
-    compressionRatio = (originalImageTotalSize - extractedImageTotalSize)/(originalImageTotalSize) * 100
-    compressionRatio = round(compressionRatio, 3)
     
     popLabel = Label(pop,
     text=
@@ -146,6 +159,7 @@ def openExtractedFolder(extractedFolder):
         globals()[imageVariables[i]] = tk.Button(imageSlider, image=imageList[i][0], bd=0, command=lambda i=i:displayImage(i))
         globals()[imageVariables[i]].pack(side=tk.LEFT)
 
+    displayImage(0)
     # print("Opening folder ...")
 
 def displayImage(index):
@@ -158,7 +172,7 @@ mainWindow.title("CMSC 162 - Final Project")
 width = mainWindow.winfo_screenwidth()
 height = mainWindow.winfo_screenheight()
 # mainWindow.geometry("%dx%d" % (width, height))
-mainWindow.geometry("800x600")
+mainWindow.geometry("1000x800")
 
 
 mainMenuBar = tk.Menu(mainWindow)
@@ -175,6 +189,9 @@ mainMenuBar.add_cascade(label="Compression", menu=compressionMenu)
 
 displayImageLabel = tk.Label(mainWindow)
 displayImageLabel.pack(anchor=tk.CENTER)
+
+informationLabel = tk.Label(mainWindow)
+informationLabel.pack(pady=10)
 
 thumbnailCanvas = tk.Canvas(mainWindow, height=60)
 thumbnailCanvas.pack(side=tk.BOTTOM, fill=tk.X)
