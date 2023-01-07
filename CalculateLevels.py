@@ -1,14 +1,7 @@
 import os
 from PIL import Image
 
-N = 20
-def calculate_level(Value, min, max): #this function calculates for the level by taking the current pixel with the min and max values
-    level = N * ((Value - min) / (max - min))
-    return level
 
-def predicted(min, L, max): #this function returns a predicted value for each pixels by calculating the level with the min and max values
-    predicted = min + ((L/N)*(max - min))
-    return round(predicted, 2)
 
 def calculatePixelLevels(folderpath, minImage, maxImage): #this function takes the argument folder of images as well with the minImage and maxImage generated prior calling this function
     
@@ -19,10 +12,6 @@ def calculatePixelLevels(folderpath, minImage, maxImage): #this function takes t
     testImage = testImage.convert("RGB")
 
     width, height = testImage.size
-
-    lvl_imgR = [[0] * height for _ in range(width)]
-    lvl_imgG = [[0] * height for _ in range(width)]
-    lvl_imgB = [[0] * height for _ in range(width)]
 
     currmaxpixelmap = maxImage.load()
     currminpixelmap = minImage.load()
