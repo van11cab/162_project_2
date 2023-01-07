@@ -21,7 +21,7 @@ def maxPixelValue(folderpath):
         image = Image.open(imgfilepath, 'r')
         image = image.convert("RGB")
         width, height = image.size
-        print(file)
+        # print(file)
 
         for x in range (0, width):
             for y in range(0, height):
@@ -66,7 +66,7 @@ def minPixelValue(folderpath):
         image = Image.open(imgfilepath, 'r')
         image = image.convert("RGB")
         width, height = image.size
-        print(file)
+        # print(file)
 
         for x in range (0, width):
             for y in range(0, height):
@@ -92,4 +92,4 @@ def minPixelValue(folderpath):
     final_min = Image.fromarray(min_img)
     # final_min.show()
     return final_min
-    print("...")
+    # print("...")

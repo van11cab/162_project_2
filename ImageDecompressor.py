@@ -2,8 +2,12 @@ import pickle
 from PIL import Image, ImageOps
 import numpy as np
 import os
+import time
 
 def decompressImages(compressedFile):
+    print("Image Extraction Starting ...")
+    start = time.perf_counter()
+
     extractedFolder = "./extractedImages/"
     if not os.path.exists(extractedFolder):
         os.mkdir(extractedFolder)
@@ -42,6 +46,28 @@ def decompressImages(compressedFile):
         extractedImage = ImageOps.mirror(extractedImage)
         extractedImage = extractedImage.rotate(90, expand=1)
         extractedImage.save(f"{extractedFolder}extractedImage-{i}", "JPEG")
-        print(f"extractedImage-{i} generated ...")
+        # print(f"extractedImage-{i} generated ...")
 
+    end = time.perf_counter()
     print(f"ALL IMAGES SUCCESSFULLY EXTRACTED!!")
+
+
+    print("Image Extraction finished ...")
+    print("Elapsed Time: ", end, start)
+    imageExtractionTime = end-start
+    print("Elapsed time [IMAGE EXTRACTION] during the whole program in seconds: ", format((imageExtractionTime), ".2f"), "seconds!")
+
+    extractedImages = os.listdir(extractedFolder)
+    totalSize = 0
+    for images in extractedImages:
+        # print(f"Image: {extractedFolder+images}")
+        totalSize += os.path.getsize(f"{extractedFolder+images}")
+
+    extractedImageTotalSize = totalSize/1024
+    extractedImageAverageSize = extractedImageTotalSize/len(extractedImages)
+
+    print(f"total size of all extracted images: {extractedImageTotalSize} KB")
+    print(f"average size of extracted images: {extractedImageAverageSize} KB")
+
+    return extractedFolder, imageExtractionTime, extractedImageTotalSize, extractedImageAverageSize
+

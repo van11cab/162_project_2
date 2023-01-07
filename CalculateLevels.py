@@ -20,8 +20,8 @@ def calculatePixelLevels(folderpath, minImage, maxImage):
 
     # width, height = testImage.size
     width, height = testImage.size
-    print(type(minImage))
-    print(type(testImage))
+    # print(type(minImage))
+    # print(type(testImage))
     #2d array that holds the levels of an image
     lvl_imgR = [[0] * height for _ in range(width)]
     lvl_imgG = [[0] * height for _ in range(width)]
@@ -33,7 +33,7 @@ def calculatePixelLevels(folderpath, minImage, maxImage):
     difference_img_library = []
 
     for file in imgdirectory:
-        print("enteering ", file)
+        # print("enteering ", file)
         imgfilepath = folderpath + "/" + file
         image = Image.open(imgfilepath, 'r')
         image = image.convert("RGB")
@@ -99,7 +99,6 @@ def calculatePixelLevels(folderpath, minImage, maxImage):
                     B = currmin[2]
                 else:
                     B = currpixel[2]
-
                 
                 difference_img[x][y] = [ R,G,B]
 

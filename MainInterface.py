@@ -1,14 +1,16 @@
 import pickle
 import tkinter as tk
 import numpy as np
-from tkinter import filedialog
+from tkinter import filedialog, Label, Button
 from tkinter import messagebox
 from tkinter import ttk
 from PIL import Image, ImageTk, ImageOps
 import os
+import time
 from CalculateLevels import calculatePixelLevels
 from MinMaxCompression import maxPixelValue, minPixelValue
 from ImageDecompressor import decompressImages
+
 
 imageList = []
 imageVariables = []
@@ -25,6 +27,8 @@ def clearFrames():
     imageVariables.clear()
 
 def openMinMax():
+    print("Image Compression Starting ...")
+    start = time.perf_counter()
     
     global minImage, maxImage
     maxImage = maxPixelValue(folderPath)
@@ -43,68 +47,70 @@ def openMinMax():
     # minImage.show()
     
     compresssed_img_lib = calculatePixelLevels(folderPath, minImage, maxImage)
-    print("done compressing")
-
-    # print(f"[0]:: {len(compresssed_img_lib[0])}")
-    # print(f"[0][0]:: {len(compresssed_img_lib[0][0])}")
-
-    # imageWidth = len(compresssed_img_lib[0])
-    # imageHeight = len(compresssed_img_lib[0][0])
-
-    # blankRGBImage = np.zeros((imageWidth, imageHeight,3), np.uint8)
+    end = time.perf_counter()
     
-    # for i in range(blankRGBImage.shape[0]):
-    #     for j in range(blankRGBImage.shape[1]):
-    #         blankRGBImage[i][j] = (compresssed_img_lib[0][i][j][0],compresssed_img_lib[0][i][j][1], compresssed_img_lib[0][i][j][2])
-    
-    # testImage = Image.fromarray(blankRGBImage)
-    # testImage.show()
+    print("Image Compression finished ...")
+    print("Elapsed Time: ", end, start)
+    imageCompressionTime = end-start
+    print("Elapsed time [IMAGE COMPRESION] during the whole program in seconds: ", format((imageCompressionTime), ".2f"), "seconds!")
 
-    # blankRGBImage2 = np.zeros((imageWidth, imageHeight,3), np.uint8)
-    
-    # for i in range(blankRGBImage2.shape[0]):
-    #     for j in range(blankRGBImage2.shape[1]):
-    #         blankRGBImage2[i][j] = (compresssed_img_lib[1][i][j][0],compresssed_img_lib[1][i][j][1], compresssed_img_lib[1][i][j][2])
-    
-    # testImage2 = Image.fromarray(blankRGBImage2)
-    # testImage2.show()
-
-    # for i in ran
-
-    # for i in range(len(compresssed_img_lib)):
-    #     testArray = compresssed_img_lib[i]
-    #     testArray = np.array(testArray)
-    #     testImage = Image.fromarray((testArray*255).astype(np.uint8))
-    #     testImage.show()
-
-    #assume uncompressed form is exactly the same as the compressed_img_lib
-    # decompressed_img_lib = decoder(compresssed_img_lib)
     
     with open("compressedFile.cmp", "wb") as compressedImage:
         pickle.dump(compresssed_img_lib, compressedImage)
 
     # print(compresssed_img_lib)
     print("displaying images ...")
-    decompressImages("compressedFile.cmp")
+
+    originalImages = os.listdir(folderPath)
+    totalSize = 0
+    for images in originalImages:
+        # print(f"Image: {extractedFolder+images}")
+        totalSize += os.path.getsize(f"{folderPath}/{images}")
+
+    originalImageTotalSize = totalSize/1024
+    originalImageAverageSize = originalImageTotalSize/len(originalImages)
+
+    print(f"number of Images: {len(originalImages)}")
+    print(f"total size of all original images: {originalImageTotalSize} KB")
+    print(f"average size of original images: {originalImageAverageSize} KB")
+
+    extractedFolder, imageExtractionTime, extractedImageTotalSize, extractedImageAverageSize = decompressImages("compressedFile.cmp")
+    openDialog(imageCompressionTime, imageExtractionTime, originalImageTotalSize, extractedImageTotalSize, originalImageAverageSize, extractedImageAverageSize, extractedFolder)
+
+def openExtractedImages(extractedFolder):
+    pop.destroy()
+    openExtractedFolder(extractedFolder)
 
 
-    # maxImage.show()
-    # minImage.show()
 
-def decoder(compresssed_img_lib):
-    #get the max and min of each image
+def openDialog(imageCompressionTime, imageExtractionTime, originalImageTotalSize, extractedImageTotalSize, originalImageAverageSize, extractedImageAverageSize, extractedFolder):
+    # messagebox.showinfo("test", "test")
+    global pop
+    pop = tk.Toplevel(mainWindow)
+    pop.title("Image Compression Results")
+    pop.geometry("600x300")
+
+    compressionRatio = (originalImageTotalSize - extractedImageTotalSize)/(originalImageTotalSize) * 100
+    compressionRatio = round(compressionRatio, 3)
     
-    return 0
+    popLabel = Label(pop,
+    text=
+        "Elapsed time [IMAGE COMPRESION]: %s seconds! \n" %(format((imageCompressionTime), ".2f")) +
+        "Total size of all [ORIGINAL IMAGE]: %skb \n" %(format((originalImageTotalSize), ".2f")) +
+        "Average size of [ORIGINAL IMAGE]: %skb\n\n" %(format((originalImageAverageSize), ".2f")) +
+        "Elapsed time [IMAGE EXTRACTION]: %s seconds! \n" %(format((imageExtractionTime), ".2f")) +
+        "Total size of all [EXTRACTED IMAGE]: %skb \n" %(format((extractedImageTotalSize), ".2f")) +
+        "Average size of [EXTRACTED IMAGE]: %skb\n\n" %(format((extractedImageAverageSize), ".2f")) +
+        "Compression Ratio [ORIGINAL/EXTRACTED]: %s\n" %(compressionRatio) +
+        "Extracted images saved to: %s" %(extractedFolder)
+    )
+    popLabel.pack(pady=10)
 
+    showExtractedImagesButton = Button(pop, text="Show Images", command=lambda: openExtractedImages(extractedFolder))
+    showExtractedImagesButton.pack()
 
 def openCalculateLevels():
-    print("...")
-
-# def openImageDecompression():
-#     compressedFile = "./compressedFile.cmp"
-#     decompressImages(compressedFile)
-#     print("...")
-
+    print("...")    
 
 def openFolder():
     global folderPath
@@ -124,6 +130,22 @@ def openFolder():
         globals()[imageVariables[i]] = tk.Button(imageSlider, image=imageList[i][0], bd=0, command=lambda i=i:displayImage(i))
         globals()[imageVariables[i]].pack(side=tk.LEFT)
 
+def openExtractedFolder(extractedFolder):
+    imageFiles = os.listdir(extractedFolder)
+
+    clearFrames()
+
+    for i in range(0, len(imageFiles)):
+        imageList.append([
+            ImageTk.PhotoImage(Image.open(extractedFolder+imageFiles[i]).resize((50,50))),
+            ImageTk.PhotoImage(Image.open(extractedFolder+imageFiles[i])),
+        ]),
+        imageVariables.append(f"img_{i}")
+
+    for i in range(len(imageVariables)):
+        globals()[imageVariables[i]] = tk.Button(imageSlider, image=imageList[i][0], bd=0, command=lambda i=i:displayImage(i))
+        globals()[imageVariables[i]].pack(side=tk.LEFT)
+
     # print("Opening folder ...")
 
 def displayImage(index):
@@ -135,7 +157,9 @@ mainWindow.title("CMSC 162 - Final Project")
 
 width = mainWindow.winfo_screenwidth()
 height = mainWindow.winfo_screenheight()
-mainWindow.geometry("%dx%d" % (width, height))
+# mainWindow.geometry("%dx%d" % (width, height))
+mainWindow.geometry("800x600")
+
 
 mainMenuBar = tk.Menu(mainWindow)
 mainWindow.config(menu = mainMenuBar)
