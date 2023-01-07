@@ -45,11 +45,36 @@ def calculatePixelLevels(folderpath, minImage, maxImage):
         for x in range(minImage.width): #testing purposes
             for y in range(minImage.height):
                 #take the current pixel of max, min, and current image
-
+                #unedited pixel value
                 currpixel = currpixelmap[x,y]
 
                 currmax = currmaxpixelmap[x,y]
                 currmin = currminpixelmap[x,y]
+
+                #edited pixel value
+                #R
+                #if white, do not edit
+                if(currmax[0] != 255):
+                    currmax[0] = currmax[0] - 10
+                
+                #B
+                if(currmax[1] != 255):
+                    currmax[1] = currmax[1] - 10
+                
+                #G
+                if(currmax[2] != 255):
+                    currmax[2] = currmax[2] - 10
+                
+                #if black, do not edit
+                #R
+                if(currmin[0] != 0):
+                    currmin[0] = currmin[0] + 10
+                    #B
+                if(currmin[1] != 0):
+                    currmin[1] = currmin[1] + 10
+                #G
+                if(currmin[2] != 0):
+                    currmin[2] = currmin[2] + 10
                 
                 #r
                 if currpixel[0] > currmax[0]:
@@ -74,7 +99,7 @@ def calculatePixelLevels(folderpath, minImage, maxImage):
                     B = currmin[2]
                 else:
                     B = currpixel[2]
-                    
+
                 
                 difference_img[x][y] = [ R,G,B]
 
