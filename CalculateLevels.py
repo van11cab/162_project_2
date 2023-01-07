@@ -20,8 +20,8 @@ def calculatePixelLevels(folderpath, minImage, maxImage):
 
     # width, height = testImage.size
     width, height = testImage.size
-    # print(type(minImage))
-    # print(type(testImage))
+    print(type(minImage))
+    print(type(testImage))
     #2d array that holds the levels of an image
     lvl_imgR = [[0] * height for _ in range(width)]
     lvl_imgG = [[0] * height for _ in range(width)]
@@ -31,9 +31,9 @@ def calculatePixelLevels(folderpath, minImage, maxImage):
     #create 2d array na maghold sa 3 values (mao na ni ang differences sa pictures nato)
     pixel = [0,0,0]
     difference_img_library = []
-
+    rangeshift = 20
     for file in imgdirectory:
-        # print("enteering ", file)
+        print("enteering ", file)
         imgfilepath = folderpath + "/" + file
         image = Image.open(imgfilepath, 'r')
         image = image.convert("RGB")
@@ -49,58 +49,34 @@ def calculatePixelLevels(folderpath, minImage, maxImage):
                 currpixel = currpixelmap[x,y]
 
                 currmax = currmaxpixelmap[x,y]
+                
                 currmin = currminpixelmap[x,y]
-
-                #edited pixel value
-                #R
-                #if white, do not edit
-                if(currmax[0] != 255):
-                    currmax[0] = currmax[0] - 10
-                
-                #B
-                if(currmax[1] != 255):
-                    currmax[1] = currmax[1] - 10
-                
-                #G
-                if(currmax[2] != 255):
-                    currmax[2] = currmax[2] - 10
-                
-                #if black, do not edit
-                #R
-                if(currmin[0] != 0):
-                    currmin[0] = currmin[0] + 10
-                    #B
-                if(currmin[1] != 0):
-                    currmin[1] = currmin[1] + 10
-                #G
-                if(currmin[2] != 0):
-                    currmin[2] = currmin[2] + 10
-                
                 #r
                 if currpixel[0] > currmax[0]:
-                    R = currmax[0]
-                elif currpixel[0] < currmin[0]:
+                    R = currmax[0]-rangeshift
+                elif currpixel[0] < (currmin[0]+rangeshift):
                     R = currmin[0]
                 else:
-                    R = currpixel[0]
+                    R = currpixel[0]-rangeshift
                 
                 #g
                 if currpixel[1] > currmax[1]:
-                    G = currmax[1]
-                elif currpixel[1] < currmin[1]:
+                    G = currmax[1]-rangeshift
+                elif currpixel[1] < currmin[1]+rangeshift:
                     G = currmin[1]
                 else:
-                    G = currpixel[1]
+                    G = currpixel[1]-rangeshift
                 
                 #B
                 if currpixel[2] > currmax[2]:
-                    B = currmax[2]
-                elif currpixel[2] < currmin[2]:
+                    B = currmax[2]-rangeshift
+                elif currpixel[2] < currmin[2]+rangeshift:
                     B = currmin[2]
                 else:
-                    B = currpixel[2]
+                    B = currpixel[2]-rangeshift
+
                 
-                difference_img[x][y] = [ R,G,B]
+                difference_img[x][y] = [R,G,B]
 
         difference_img_library.append(difference_img)
 
