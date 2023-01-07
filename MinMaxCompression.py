@@ -7,9 +7,7 @@ def maxPixelValue(folderpath):
     imgdirectory = os.listdir(folderpath)
     imgfilepath = folderpath + "/" + imgdirectory[0]
     testImage = Image.open(imgfilepath, 'r')    
-    # testImage = Image.open(folderpath + directory[0], 'r')
     testImage = testImage.convert("RGB")
-    # width, height = testImage.size
     width, height = testImage.size
 
     max_imgR = [[0] * height for _ in range(width)]
@@ -21,7 +19,6 @@ def maxPixelValue(folderpath):
         image = Image.open(imgfilepath, 'r')
         image = image.convert("RGB")
         width, height = image.size
-        # print(file)
 
         for x in range (0, width):
             for y in range(0, height):
@@ -45,16 +42,13 @@ def maxPixelValue(folderpath):
             max_img[x,y] = holder
 
     final_max = Image.fromarray(max_img)
-    # final_max.show()
     return final_max
 
 def minPixelValue(folderpath):
     imgdirectory = os.listdir(folderpath)
     imgfilepath = folderpath + "/" + imgdirectory[0]
     testImage = Image.open(imgfilepath, 'r')    
-    # testImage = Image.open(folderpath + directory[0], 'r')
     testImage = testImage.convert("RGB")
-    # width, height = testImage.size
     width, height = testImage.size
 
     min_imgR = [[255] * height for _ in range(width)]
@@ -66,7 +60,6 @@ def minPixelValue(folderpath):
         image = Image.open(imgfilepath, 'r')
         image = image.convert("RGB")
         width, height = image.size
-        # print(file)
 
         for x in range (0, width):
             for y in range(0, height):
@@ -90,6 +83,4 @@ def minPixelValue(folderpath):
             min_img[x,y] = holder
 
     final_min = Image.fromarray(min_img)
-    # final_min.show()
     return final_min
-    # print("...")

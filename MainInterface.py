@@ -22,7 +22,17 @@ def clearFrames():
     if imageSlider.winfo_children()!=[]:
         for widgets in imageSlider.winfo_children():
             widgets.destroy()
+    informationLabel.configure(text="")
+    imageList.clear()
+    imageVariables.clear()
 
+def modifiedClearFrames():
+    if displayImageLabel.winfo_children()!=[]:
+        for widgets in displayImageLabel.winfo_children():
+            widgets.destroy()
+    if imageSlider.winfo_children()!=[]:
+        for widgets in imageSlider.winfo_children():
+            widgets.destroy()
     imageList.clear()
     imageVariables.clear()
 
@@ -32,54 +42,34 @@ def openMinMax():
     
     global minImage, maxImage
     maxImage = maxPixelValue(folderPath)
-    # maxImage.show()
     maxImage = ImageOps.mirror(maxImage)
-    # maxImage.show()
     maxImage = maxImage.rotate(90, expand = 1)
-    # maxImage.show()
-
 
     minImage = minPixelValue(folderPath)
-    # minImage.show()
     minImage = ImageOps.mirror(minImage)
-    # minImage.show()
     minImage = minImage.rotate(90, expand=1)
-    # minImage.show()
     
     compresssed_img_lib = calculatePixelLevels(folderPath, minImage, maxImage)
     end = time.perf_counter()
     
-    print("Image Compression finished ...")
-    print("Elapsed Time: ", end, start)
     imageCompressionTime = end-start
-    print("Elapsed time [IMAGE COMPRESION] during the whole program in seconds: ", format((imageCompressionTime), ".2f"), "seconds!")
-
     
     with open("compressedFile.cmp", "wb") as compressedImage:
         pickle.dump(compresssed_img_lib, compressedImage)
 
-    # print(compresssed_img_lib)
-    print("displaying images ...")
-
     originalImages = os.listdir(folderPath)
     totalSize = 0
     for images in originalImages:
-        # print(f"Image: {extractedFolder+images}")
         totalSize += os.path.getsize(f"{folderPath}/{images}")
 
     originalImageTotalSize = totalSize/1024
     originalImageAverageSize = originalImageTotalSize/len(originalImages)
-
-    print(f"number of Images: {len(originalImages)}")
-    print(f"total size of all original images: {originalImageTotalSize} KB")
-    print(f"average size of original images: {originalImageAverageSize} KB")
 
     extractedFolder, imageExtractionTime, extractedImageTotalSize, extractedImageAverageSize = decompressImages("compressedFile.cmp")
     compressionRatio = (originalImageTotalSize - extractedImageTotalSize)/(originalImageTotalSize) * 100
     compressionRatio = round(compressionRatio, 3)
 
     openDialog(imageCompressionTime, imageExtractionTime, originalImageTotalSize, extractedImageTotalSize, originalImageAverageSize, extractedImageAverageSize, extractedFolder, compressionRatio)
-
 
     informationLabel.configure(
     text=
@@ -100,7 +90,6 @@ def openExtractedImages(extractedFolder):
 
 
 def openDialog(imageCompressionTime, imageExtractionTime, originalImageTotalSize, extractedImageTotalSize, originalImageAverageSize, extractedImageAverageSize, extractedFolder, compressionRatio):
-    # messagebox.showinfo("test", "test")
     global pop
     pop = tk.Toplevel(mainWindow)
     pop.title("Image Compression Results")
@@ -121,9 +110,6 @@ def openDialog(imageCompressionTime, imageExtractionTime, originalImageTotalSize
 
     showExtractedImagesButton = Button(pop, text="Show Images", command=lambda: openExtractedImages(extractedFolder))
     showExtractedImagesButton.pack()
-
-def openCalculateLevels():
-    print("...")    
 
 def openFolder():
     global folderPath
@@ -146,7 +132,7 @@ def openFolder():
 def openExtractedFolder(extractedFolder):
     imageFiles = os.listdir(extractedFolder)
 
-    clearFrames()
+    modifiedClearFrames()
 
     for i in range(0, len(imageFiles)):
         imageList.append([
@@ -160,7 +146,6 @@ def openExtractedFolder(extractedFolder):
         globals()[imageVariables[i]].pack(side=tk.LEFT)
 
     displayImage(0)
-    # print("Opening folder ...")
 
 def displayImage(index):
     displayImageLabel.config(image=imageList[index][1])
@@ -171,7 +156,6 @@ mainWindow.title("CMSC 162 - Final Project")
 
 width = mainWindow.winfo_screenwidth()
 height = mainWindow.winfo_screenheight()
-# mainWindow.geometry("%dx%d" % (width, height))
 mainWindow.geometry("1000x800")
 
 
@@ -183,8 +167,7 @@ fileMenu.add_command(label="Open Folder", command=openFolder)
 mainMenuBar.add_cascade(label="File", menu=fileMenu)
 
 compressionMenu = tk.Menu(mainMenuBar, tearoff=0)
-compressionMenu.add_command(label="Min and Max", command=openMinMax)
-compressionMenu.add_command(label="Calculate Levels", command=openCalculateLevels)
+compressionMenu.add_command(label="Min and Max Compression", command=openMinMax)
 mainMenuBar.add_cascade(label="Compression", menu=compressionMenu)
 
 displayImageLabel = tk.Label(mainWindow)
