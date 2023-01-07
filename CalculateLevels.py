@@ -31,7 +31,7 @@ def calculatePixelLevels(folderpath, minImage, maxImage):
     #create 2d array na maghold sa 3 values (mao na ni ang differences sa pictures nato)
     pixel = [0,0,0]
     difference_img_library = []
-    rangeshift = 20
+    rangeshift = 40
     for file in imgdirectory:
         print("enteering ", file)
         imgfilepath = folderpath + "/" + file
@@ -52,7 +52,8 @@ def calculatePixelLevels(folderpath, minImage, maxImage):
                 
                 currmin = currminpixelmap[x,y]
                 #r
-                if currpixel[0] > currmax[0]:
+               
+                if currpixel[0] >= currmax[0]:
                     R = currmax[0]-rangeshift
                 elif currpixel[0] < (currmin[0]+rangeshift):
                     R = currmin[0]
@@ -60,7 +61,7 @@ def calculatePixelLevels(folderpath, minImage, maxImage):
                     R = currpixel[0]-rangeshift
                 
                 #g
-                if currpixel[1] > currmax[1]:
+                if currpixel[1] >= currmax[1]:
                     G = currmax[1]-rangeshift
                 elif currpixel[1] < currmin[1]+rangeshift:
                     G = currmin[1]
@@ -68,13 +69,27 @@ def calculatePixelLevels(folderpath, minImage, maxImage):
                     G = currpixel[1]-rangeshift
                 
                 #B
-                if currpixel[2] > currmax[2]:
+                if currpixel[2] >= currmax[2]:
                     B = currmax[2]-rangeshift
                 elif currpixel[2] < currmin[2]+rangeshift:
                     B = currmin[2]
                 else:
                     B = currpixel[2]-rangeshift
 
+
+                                
+                if(R < 0):
+                    R=0
+                elif(R > 255):
+                    R = 255
+                if(B < 0):
+                    B = 0
+                elif(B > 255):
+                    B = 255
+                if(G < 0):
+                    G = 0
+                elif(G > 255):
+                    G = 255
                 
                 difference_img[x][y] = [R,G,B]
 
