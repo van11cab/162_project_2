@@ -2,15 +2,17 @@ import os
 from PIL import Image
 
 N = 20
-def calculate_level(Value, min, max):
+def calculate_level(Value, min, max): #this function calculates for the level by taking the current pixel with the min and max values
     level = N * ((Value - min) / (max - min))
     return level
 
-def predicted(min, L, max):
+def predicted(min, L, max): #this function returns a predicted value for each pixels by calculating the level with the min and max values
     predicted = min + ((L/N)*(max - min))
     return round(predicted, 2)
 
-def calculatePixelLevels(folderpath, minImage, maxImage):
+def calculatePixelLevels(folderpath, minImage, maxImage): #this function takes the argument folder of images as well with the minImage and maxImage generated prior calling this function
+    
+    #line 16-28: initialization of the original image prior its compression
     imgdirectory = os.listdir(folderpath)
     imgfilepath = folderpath + "/" + imgdirectory[0]
     testImage = Image.open(imgfilepath, 'r')    
@@ -28,6 +30,8 @@ def calculatePixelLevels(folderpath, minImage, maxImage):
     pixel = [0,0,0]
     difference_img_library = []
     rangeshift = 40
+
+    #line 35-87: this for loop compares the current value with the min and max values from the minImage and maxImage this generates a compressedImage which is appended to a list which is returned to the main function
     for file in imgdirectory:
         print("enteering ", file)
         imgfilepath = folderpath + "/" + file

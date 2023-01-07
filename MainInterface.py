@@ -15,7 +15,7 @@ from ImageDecompressor import decompressImages
 imageList = []
 imageVariables = []
 
-def clearFrames():
+def clearFrames(): #Function responsible for clearing the label frame responsible for clearing the widgets and texts from the User interface
     if displayImageLabel.winfo_children()!=[]:
         for widgets in displayImageLabel.winfo_children():
             widgets.destroy()
@@ -26,7 +26,7 @@ def clearFrames():
     imageList.clear()
     imageVariables.clear()
 
-def modifiedClearFrames():
+def modifiedClearFrames(): #modified version of the clearFrames() that utilizes the same function but catered specficially for openExtractedFolder()
     if displayImageLabel.winfo_children()!=[]:
         for widgets in displayImageLabel.winfo_children():
             widgets.destroy()
@@ -36,10 +36,11 @@ def modifiedClearFrames():
     imageList.clear()
     imageVariables.clear()
 
-def openMinMax():
+def openMinMax(): #Function which is responsible for the entire compression process -- it holds for the transformation of images as well its extraction
     print("Image Compression Starting ...")
     start = time.perf_counter()
     
+    #lines 44-51: minPixelValue and maxPixelValue are called to identify the maximum and mininum values of each pixels' varying on every sequence of images inside the argument folder
     global minImage, maxImage
     maxImage = maxPixelValue(folderPath)
     maxImage = ImageOps.mirror(maxImage)
@@ -48,15 +49,18 @@ def openMinMax():
     minImage = minPixelValue(folderPath)
     minImage = ImageOps.mirror(minImage)
     minImage = minImage.rotate(90, expand=1)
-    
+
+    #after the minImage and maxImage are identified, the sequence of images are then passed to the calculatePixelLevel which returns a concatenated single file with all the compressed images
     compresssed_img_lib = calculatePixelLevels(folderPath, minImage, maxImage)
     end = time.perf_counter()
     
     imageCompressionTime = end-start
     
+    #generation of the single-file containing the images
     with open("compressedFile.cmp", "wb") as compressedImage:
         pickle.dump(compresssed_img_lib, compressedImage)
 
+    #lines 63-74: calculates for the size of images in the argument folder containing the original images
     originalImages = os.listdir(folderPath)
     totalSize = 0
     for images in originalImages:
@@ -69,6 +73,7 @@ def openMinMax():
     compressionRatio = (originalImageTotalSize - extractedImageTotalSize)/(originalImageTotalSize) * 100
     compressionRatio = round(compressionRatio, 3)
 
+    #line 77-89: openDialog presents the information necessary about the Image compression process. It includes the overall running time, the original and compressed sizes, and the compression ratio
     openDialog(imageCompressionTime, imageExtractionTime, originalImageTotalSize, extractedImageTotalSize, originalImageAverageSize, extractedImageAverageSize, extractedFolder, compressionRatio)
 
     informationLabel.configure(
@@ -83,12 +88,11 @@ def openMinMax():
         "Extracted images saved to: %s" %(extractedFolder)
     )
 
-def openExtractedImages(extractedFolder):
+def openExtractedImages(extractedFolder): #Helper function for the dialog which displays the information about Image compression
     pop.destroy()
     openExtractedFolder(extractedFolder)
 
-
-
+#line 96-116: openDialog displays the information about the entire Image compression process
 def openDialog(imageCompressionTime, imageExtractionTime, originalImageTotalSize, extractedImageTotalSize, originalImageAverageSize, extractedImageAverageSize, extractedFolder, compressionRatio):
     global pop
     pop = tk.Toplevel(mainWindow)
@@ -111,7 +115,7 @@ def openDialog(imageCompressionTime, imageExtractionTime, originalImageTotalSize
     showExtractedImagesButton = Button(pop, text="Show Images", command=lambda: openExtractedImages(extractedFolder))
     showExtractedImagesButton.pack()
 
-def openFolder():
+def openFolder(): #Helper function that asks the user for the argument folder containing the original sequence of images
     global folderPath
     folderPath = filedialog.askdirectory()
     imageFiles = os.listdir(folderPath)
@@ -129,7 +133,7 @@ def openFolder():
         globals()[imageVariables[i]] = tk.Button(imageSlider, image=imageList[i][0], bd=0, command=lambda i=i:displayImage(i))
         globals()[imageVariables[i]].pack(side=tk.LEFT)
 
-def openExtractedFolder(extractedFolder):
+def openExtractedFolder(extractedFolder): #modified openFolder function that displays the compressed images after the compression
     imageFiles = os.listdir(extractedFolder)
 
     modifiedClearFrames()
@@ -147,10 +151,10 @@ def openExtractedFolder(extractedFolder):
 
     displayImage(0)
 
-def displayImage(index):
+def displayImage(index): #displays the image on the user-interface
     displayImageLabel.config(image=imageList[index][1])
 
-
+#line 158-196: TKINTER codes for the user-interface
 mainWindow = tk.Tk()
 mainWindow.title("CMSC 162 - Final Project")
 
